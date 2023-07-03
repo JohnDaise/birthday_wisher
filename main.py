@@ -1,15 +1,17 @@
 import smtplib
+import ssl
 import datetime as dt
 import random
 import pandas
 
-MY_EMAIL = "johnedaise@yahoo.com"
-PASSWORD = "Jedwin19870805"
+MY_EMAIL = "johnedaise@gmail.com"
+PASSWORD = "iclvuycjrvtywpbu"
 
 
 now = dt.datetime.now()
-today_month = now.month()
-today_day = now.weekday()
+
+today_month = now.month
+today_day = now.day
 today = (today_month, today_day)
 
 data = pandas.read_csv("birthdays.csv")
@@ -25,24 +27,16 @@ if today in birthday_dict:
         contents = letter.read()
         contents = contents.replace("[NAME]", birthday_row["name"])
 
-    with smtplib.SMTP("smtp.mail.yahoo.com") as connection:
-        connection.starttls()
+    context = ssl.create_default_context()
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
+        # connection.starttls()
+        connection.ehlo()
         connection.login(user=MY_EMAIL, password=PASSWORD)
         connection.sendmail(
             from_addr=MY_EMAIL,
             to_addrs=birthday_row["email"],
             msg=f"Subject:Happy Birthday!\n\n{contents}")
-
-
-
-
-# with smtplib.SMTP("smtp.mail.yahoo.com") as connection:
-#     connection.starttls()
-#     connection.login(user=my_email, password=password)
-#     connection.sendmail(
-#         from_addr=my_email,
-#         to_addrs="jdaise@gmail.com",
-#         msg="Subject:Hello\n\nThis is the body of my email.")
 
 
 # now = dt.datetime.now()
